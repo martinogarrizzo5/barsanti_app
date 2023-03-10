@@ -1,3 +1,4 @@
+import "dart:io";
 import "package:auto_route/auto_route.dart";
 import 'package:barsanti_app/presentation/theme/barsanti_icons.dart';
 import "package:barsanti_app/presentation/theme/colors.dart";
@@ -43,8 +44,10 @@ class MainScreen extends StatelessWidget {
               iconSize: 26,
               tabBackgroundColor: Theme.of(context).primaryColor,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              tabMargin:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              tabMargin: Platform.isIOS
+                  ? const EdgeInsets.only(
+                      bottom: 36, top: 16, left: 16, right: 16)
+                  : const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               hoverColor: Theme.of(context).primaryColor.withOpacity(0.1),
               rippleColor: Theme.of(context).primaryColor.withOpacity(0.15),
               textStyle: const TextStyle(

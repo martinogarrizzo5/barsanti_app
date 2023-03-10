@@ -35,7 +35,7 @@ class SearchScreen extends StatelessWidget {
                       color: BarsantiColors.placeholderText,
                     ),
                     suffixIcon: Padding(
-                      padding: EdgeInsets.only(right: 16.0),
+                      padding: const EdgeInsets.only(right: 16.0),
                       child: Icon(
                         BarsantiIcons.search,
                         size: 32,
