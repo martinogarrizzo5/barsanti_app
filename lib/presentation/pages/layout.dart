@@ -38,6 +38,7 @@ class MainScreen extends StatelessWidget {
                   tabsRouter.setActiveIndex(index);
                 }
               },
+              duration: const Duration(milliseconds: 300),
               gap: 8,
               color: BarsantiColors.inactiveControl,
               activeColor: Colors.white,

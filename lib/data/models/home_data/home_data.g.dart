@@ -8,10 +8,10 @@ part of 'home_data.dart';
 
 HomeData _$HomeDataFromJson(Map<String, dynamic> json) => HomeData(
       latestNews: (json['latestNews'] as List<dynamic>)
-          .map((e) => News.fromJson(e as Map<String, dynamic>))
+          .map((e) => NewsIntro.fromJson(e as Map<String, dynamic>))
           .toList(),
       highlightedNews: (json['highlightedNews'] as List<dynamic>)
-          .map((e) => News.fromJson(e as Map<String, dynamic>))
+          .map((e) => NewsIntro.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

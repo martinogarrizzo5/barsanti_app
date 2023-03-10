@@ -1,4 +1,4 @@
-import "package:barsanti_app/data/models/news/news.dart";
+import "package:barsanti_app/data/models/news_intro/news_intro.dart";
 import "package:flutter/material.dart";
 import "package:json_annotation/json_annotation.dart";
 
@@ -7,8 +7,8 @@ part "home_data.g.dart";
 @JsonSerializable()
 @immutable
 class HomeData {
-  final List<News> latestNews;
-  final List<News> highlightedNews;
+  final List<NewsIntro> latestNews;
+  final List<NewsIntro> highlightedNews;
 
   const HomeData({
     required this.latestNews,

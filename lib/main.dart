@@ -1,5 +1,6 @@
 import 'package:barsanti_app/presentation/theme/theme.dart';
 import 'package:barsanti_app/routes/router.gr.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -19,6 +20,14 @@ class MyApp extends StatelessWidget {
       title: 'Barsanti App',
       routerDelegate: _appRouter.delegate(),
       routeInformationParser: _appRouter.defaultRouteParser(),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('it', 'IT'),
+      ],
     );
   }
 }
