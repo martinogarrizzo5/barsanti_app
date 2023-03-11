@@ -1,3 +1,4 @@
+import 'package:barsanti_app/data/api/categories_repo.dart';
 import 'package:barsanti_app/data/api/news_repo.dart';
 import 'package:barsanti_app/data/models/home_data/home_data.dart';
 import 'package:barsanti_app/presentation/theme/colors.dart';
@@ -7,6 +8,7 @@ import 'package:barsanti_app/presentation/widgets/mini_news_card.dart';
 import 'package:barsanti_app/presentation/widgets/news_card.dart';
 import 'package:barsanti_app/presentation/widgets/placeholders.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import "package:carousel_slider/carousel_slider.dart";
@@ -19,19 +21,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  CarouselController _carouselController = CarouselController();
+  final CarouselController _carouselController = CarouselController();
   late Future<HomeData> _homeDataRequest;
   double _page = 0;
 
   @override
   void initState() {
     super.initState();
-    _homeDataRequest = NewsRepository().getHomeData();
+    _homeDataRequest = GetIt.I.get<NewsRepository>().getHomeData();
   }
 
   Future<void> refreshHomeData() async {
     setState(() {
-      _homeDataRequest = NewsRepository().getHomeData();
+      _homeDataRequest = GetIt.I.get<NewsRepository>().getHomeData();
+      _page = 0;
     });
   }
 
@@ -39,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: BarsantiStyles.scaffoldYPadding,
-        horizontal: BarsantiStyles.scaffoldXPadding,
+        horizontal: 24,
       ),
       child: Shimmer.fromColors(
         baseColor: BarsantiColors.tile,
@@ -48,10 +51,12 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Caricamento...", style: BarsantiStyles.title),
-            SizedBox(height: 12),
-            BigNewsPlaceholder(),
-            SizedBox(height: 18),
+            ...const [
+              Text("Caricamento...", style: BarsantiStyles.title),
+              SizedBox(height: 12),
+              BigNewsPlaceholder(),
+              SizedBox(height: 18),
+            ],
             Align(
               alignment: Alignment.center,
               child: SmoothIndicator(
@@ -60,14 +65,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 effect: Scroll.dotsIndicatorEffect(),
               ),
             ),
-            SizedBox(height: 24),
-            Text("Caricamento...", style: BarsantiStyles.title),
-            SizedBox(height: 12),
-            MiniNewsPlaceholder(),
-            SizedBox(height: 24),
-            MiniNewsPlaceholder(),
-            SizedBox(height: 24),
-            MiniNewsPlaceholder(),
+            ...const [
+              SizedBox(height: 24),
+              Text("Caricamento...", style: BarsantiStyles.title),
+              SizedBox(height: 12),
+              MiniNewsPlaceholder(),
+              SizedBox(height: 24),
+              MiniNewsPlaceholder(),
+              SizedBox(height: 24),
+              MiniNewsPlaceholder(),
+            ]
           ],
         ),
       ),
@@ -96,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
               autoPlay: true,
               onPageChanged: (page, reason) {
                 setState(() {
-                  _page = page * 1.0;
+                  _page = page * 1.0; // * 1.0 to convert to double
                 });
               }),
         ),
@@ -145,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 8),
                 Align(
                   alignment: Alignment.center,
                   child: Image.asset(
@@ -152,19 +160,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 180,
                   ),
                 ),
-                const SizedBox(height: 16),
                 FutureBuilder(
                   future: _homeDataRequest,
                   builder: (ctx, snap) {
-                    if (snap.error != null) {
+                    if (snap.hasError) {
                       debugPrint(snap.error.toString());
                       return Text("something went wrong");
                     }
                     if (snap.connectionState == ConnectionState.done) {
                       return _buildHome(snap.data!);
-                    } else {
-                      return _buildPlaceholder();
                     }
+
+                    return _buildPlaceholder();
                   },
                 ),
               ],

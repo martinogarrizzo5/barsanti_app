@@ -27,7 +27,7 @@ class BarsantiColors {
   static const Color primaryDarker = Color(0xFF0A4C5F);
 
   static const Color border = Color(0xFFB8C0C7);
-  static const Color title = Color(0xFF001F28);
+  static const Color text = Color(0xFF001F28);
   static const Color subTitleLight = Color(0xFF5E6F74);
   static const Color subTitleDark = Color(0xFFCCCCCC);
   static const Color searchBar = Color(0xFFEEEEEE);

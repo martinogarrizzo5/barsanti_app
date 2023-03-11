@@ -6,19 +6,20 @@ class Scroll {
   static CustomizableEffect dotsIndicatorEffect() {
     return CustomizableEffect(
       dotDecoration: DotDecoration(
-        width: 14,
-        height: 14,
+        width: 12,
+        height: 12,
         borderRadius: BorderRadius.circular(999),
         color: BarsantiColors.dotColor,
       ),
+      spacing: 10,
       activeDotDecoration: DotDecoration(
-        width: 14,
-        height: 14,
+        width: 12,
+        height: 12,
         borderRadius: BorderRadius.circular(999),
         color: Colors.white,
         dotBorder: const DotBorder(
-          width: 3,
-          color: BarsantiColors.title,
+          width: 2,
+          color: BarsantiColors.text,
         ),
       ),
     );

@@ -40,6 +40,7 @@ class MainScreen extends StatelessWidget {
               },
               duration: const Duration(milliseconds: 300),
               gap: 8,
+              backgroundColor: Colors.white,
               color: BarsantiColors.inactiveControl,
               activeColor: Colors.white,
               iconSize: 26,

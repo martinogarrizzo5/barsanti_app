@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:barsanti_app/data/models/news_intro/news_intro.dart';
 import 'package:barsanti_app/presentation/theme/colors.dart';
 import 'package:barsanti_app/presentation/theme/styles.dart';
 import 'package:barsanti_app/presentation/widgets/network_image.dart';
+import 'package:barsanti_app/routes/router.gr.dart';
 import 'package:barsanti_app/utils/formatters.dart';
 import 'package:flutter/material.dart';
 
@@ -26,23 +28,18 @@ class NewsCard extends StatelessWidget {
               width: double.infinity,
             ),
             // backdrop filter is used to blur the background
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {},
-                child: Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(0.05),
-                        Colors.black.withOpacity(0.6),
-                      ],
-                    ),
-                  ),
+
+            Container(
+              height: double.infinity,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.05),
+                    Colors.black.withOpacity(0.6),
+                  ],
                 ),
               ),
             ),
@@ -77,6 +74,14 @@ class NewsCard extends StatelessWidget {
                 ],
               ),
             ),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => context.router.navigate(
+                  NewsDetailsScreenRoute(newsId: news.id),
+                ),
+              ),
+            )
           ],
         ),
       ),

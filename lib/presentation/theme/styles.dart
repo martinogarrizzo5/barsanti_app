@@ -11,15 +11,19 @@ class BarsantiStyles {
   static const TextStyle title = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.bold,
-    color: BarsantiColors.title,
+    color: BarsantiColors.text,
+  );
+
+  static const TextStyle body = TextStyle(
+    fontSize: 14,
+    color: BarsantiColors.text,
+    height: 1.4,
   );
 
   static const TextStyle miniNewsTitle = TextStyle(
-    fontSize: 17,
-    fontWeight: FontWeight.w600,
-    color: BarsantiColors.title,
-    fontFamily: "NewsReader",
-    height: 1.3,
+    fontSize: 15,
+    fontWeight: FontWeight.w500,
+    color: BarsantiColors.text,
   );
 
   static const TextStyle miniNewsDate = TextStyle(
@@ -49,5 +53,30 @@ class BarsantiStyles {
     fontSize: 14,
     color: BarsantiColors.subTitleDark,
     fontWeight: FontWeight.w500,
+  );
+
+  static const TextStyle newsDetailsTitle = TextStyle(
+    fontSize: 21,
+    fontWeight: FontWeight.w600,
+    color: BarsantiColors.text,
+    height: 1.3,
+  );
+
+  static const TextStyle newsDetailsCategory = TextStyle(
+    fontSize: 14,
+    color: BarsantiColors.subTitleLight,
+    fontWeight: FontWeight.w500,
+  );
+
+  static final button = ButtonStyle(
+    shape: MaterialStateProperty.all(
+      const StadiumBorder(),
+    ),
+    padding: MaterialStateProperty.all(
+      const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 8,
+      ),
+    ),
   );
 }

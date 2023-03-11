@@ -1,8 +1,10 @@
+import "package:auto_route/auto_route.dart";
 import "package:barsanti_app/data/models/news_intro/news_intro.dart";
 import "package:barsanti_app/presentation/theme/barsanti_icons.dart";
 import "package:barsanti_app/presentation/theme/colors.dart";
 import "package:barsanti_app/presentation/theme/styles.dart";
 import "package:barsanti_app/presentation/widgets/network_image.dart";
+import "package:barsanti_app/routes/router.gr.dart";
 import "package:barsanti_app/utils/formatters.dart";
 import "package:flutter/material.dart";
 
@@ -15,7 +17,9 @@ class MiniNewsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
-      onTap: () {},
+      onTap: () => context.router.navigate(
+        NewsDetailsScreenRoute(newsId: news.id),
+      ),
       child: Row(
         children: [
           ClipRRect(

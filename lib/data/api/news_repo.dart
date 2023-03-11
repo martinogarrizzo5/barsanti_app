@@ -11,7 +11,7 @@ class NewsRepository {
     return HomeData.fromJson(response.data);
   }
 
-  Future<News> getNewsById(String id) async {
+  Future<News> getNewsById(int id) async {
     final response = await _dio.get("/news/$id");
     return News.fromJson(response.data);
   }

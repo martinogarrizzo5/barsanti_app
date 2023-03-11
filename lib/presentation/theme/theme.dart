@@ -1,4 +1,5 @@
 import 'package:barsanti_app/presentation/theme/colors.dart';
+import 'package:barsanti_app/presentation/theme/styles.dart';
 import 'package:flutter/material.dart';
 
 @immutable
@@ -19,6 +20,11 @@ class BarsantiTheme {
       ),
       scaffoldBackgroundColor: Colors.white,
       fontFamily: "Poppins",
+      textTheme: const TextTheme(
+        bodyLarge: BarsantiStyles.body,
+        bodyMedium: BarsantiStyles.body,
+        bodySmall: BarsantiStyles.body,
+      ),
     );
   }
 }

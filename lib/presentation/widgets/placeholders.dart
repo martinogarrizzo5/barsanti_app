@@ -6,12 +6,46 @@ class BigNewsPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ImagePlaceholder(
+      height: 250,
+      width: MediaQuery.of(context).size.width * 0.9,
+    );
+  }
+}
+
+class TextPlaceholder extends StatelessWidget {
+  final double width;
+
+  const TextPlaceholder({super.key, this.width = 80});
+
+  @override
+  Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: Container(
+        height: 12,
+        width: width,
         color: BarsantiColors.tile,
-        height: 250,
-        width: MediaQuery.of(context).size.width * 0.9,
+      ),
+    );
+  }
+}
+
+class ImagePlaceholder extends StatelessWidget {
+  final double width;
+  final double height;
+
+  const ImagePlaceholder(
+      {super.key, required this.width, required this.height});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        height: height,
+        width: width,
+        color: BarsantiColors.tile,
       ),
     );
   }
@@ -24,51 +58,27 @@ class MiniNewsPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            height: 100,
-            width: 100,
-            color: BarsantiColors.tile,
-          ),
+        const ImagePlaceholder(
+          height: 100,
+          width: 100,
         ),
         const SizedBox(width: 20),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  height: 12,
-                  width: 80,
-                  color: BarsantiColors.tile,
-                ),
+            children: const [
+              TextPlaceholder(),
+              SizedBox(height: 12),
+              TextPlaceholder(
+                width: double.infinity,
               ),
-              const SizedBox(height: 12),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  height: 12,
-                  color: BarsantiColors.tile,
-                ),
+              SizedBox(height: 12),
+              TextPlaceholder(
+                width: double.infinity,
               ),
-              const SizedBox(height: 12),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  height: 12,
-                  color: BarsantiColors.tile,
-                ),
-              ),
-              const SizedBox(height: 12),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  height: 12,
-                  width: 120,
-                  color: BarsantiColors.tile,
-                ),
+              SizedBox(height: 12),
+              TextPlaceholder(
+                width: 120,
               ),
             ],
           ),
