@@ -1,4 +1,3 @@
-import 'package:barsanti_app/data/api/categories_repo.dart';
 import 'package:barsanti_app/data/api/news_repo.dart';
 import 'package:barsanti_app/data/models/home_data/home_data.dart';
 import 'package:barsanti_app/presentation/theme/colors.dart';
@@ -147,8 +146,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: refreshHomeData,
-        child: SingleChildScrollView(
-          child: SafeArea(
+        child: SafeArea(
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

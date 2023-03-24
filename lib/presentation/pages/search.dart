@@ -1,10 +1,51 @@
+import "package:barsanti_app/data/api/categories_repo.dart";
+import "package:barsanti_app/data/models/category/category.dart";
 import "package:barsanti_app/presentation/theme/barsanti_icons.dart";
 import "package:barsanti_app/presentation/theme/colors.dart";
 import "package:barsanti_app/presentation/theme/styles.dart";
+import "package:barsanti_app/presentation/widgets/network_image.dart";
+import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
+import "package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart";
+import "package:get_it/get_it.dart";
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
+
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  late Future<List<Category>> _categoriesRequest;
+
+  @override
+  void initState() {
+    super.initState();
+    _categoriesRequest = GetIt.I.get<CategoriesRepository>().getCategories();
+  }
+
+  Widget _buildCategoriesList(List<Category> categories) {
+    return MasonryGridView.count(
+      itemCount: categories.length,
+      crossAxisCount: 2,
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
+      shrinkWrap: true,
+      primary: false,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Container(
+          height: index != 0 && index % 2 == 0 ? 200 : 300,
+          child: BarsantiNetworkImage(
+            imageUrl: categories[index].imageUrl,
+            width: double.infinity,
+            height: index + 1 % 2 == 0 ? 200 : 300,
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +87,21 @@ class SearchScreen extends StatelessWidget {
                   keyboardType: TextInputType.text,
                 ),
               ),
-              Column(),
+              const SizedBox(height: 32),
+              FutureBuilder(
+                future: _categoriesRequest,
+                builder: (ctx, snap) {
+                  if (snap.hasError) {
+                    debugPrint(snap.error.toString());
+                    return Text("something went wrong");
+                  }
+                  if (snap.connectionState == ConnectionState.done) {
+                    return _buildCategoriesList(snap.data!);
+                  }
+
+                  return Text("Loading...");
+                },
+              ),
             ],
           ),
         ),
