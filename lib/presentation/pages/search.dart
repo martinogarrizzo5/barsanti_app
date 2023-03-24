@@ -1,9 +1,13 @@
+import "dart:math";
+
+import "package:auto_route/auto_route.dart";
 import "package:barsanti_app/data/api/categories_repo.dart";
 import "package:barsanti_app/data/models/category/category.dart";
 import "package:barsanti_app/presentation/theme/barsanti_icons.dart";
 import "package:barsanti_app/presentation/theme/colors.dart";
 import "package:barsanti_app/presentation/theme/styles.dart";
 import "package:barsanti_app/presentation/widgets/network_image.dart";
+import "package:barsanti_app/routes/router.gr.dart";
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart";
@@ -35,16 +39,60 @@ class _SearchScreenState extends State<SearchScreen> {
       primary: false,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        return Container(
-          height: index != 0 && index % 2 == 0 ? 200 : 300,
-          child: BarsantiNetworkImage(
-            imageUrl: categories[index].imageUrl,
-            width: double.infinity,
-            height: index + 1 % 2 == 0 ? 200 : 300,
+        final height = _calculateCategoryItemHeight(index);
+        return SizedBox(
+          height: height,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Stack(
+              children: [
+                BarsantiNetworkImage(
+                  imageUrl: categories[index].imageUrl,
+                  width: double.infinity,
+                  height: height,
+                ),
+                Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.05),
+                        Colors.black.withOpacity(0.6),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 16,
+                  left: 16,
+                  child: Text(
+                    categories[index].name,
+                    style: BarsantiStyles.categoryCardName,
+                  ),
+                ),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => {},
+                  ),
+                )
+              ],
+            ),
           ),
         );
       },
     );
+  }
+
+  double _calculateCategoryItemHeight(int index) {
+    if (index % 2 == 0) {
+      return 200 + Random().nextInt(21) * 1.0;
+    } else {
+      return 250 + Random().nextInt(21) * 1.0;
+    }
   }
 
   @override
@@ -55,7 +103,7 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(
             vertical: BarsantiStyles.scaffoldYPadding,
-            horizontal: BarsantiStyles.scaffoldXPadding,
+            horizontal: 24,
           ),
           child: Column(
             children: [

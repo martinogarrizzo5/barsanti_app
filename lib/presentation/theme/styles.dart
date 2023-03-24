@@ -79,4 +79,10 @@ class BarsantiStyles {
       ),
     ),
   );
+
+  static const TextStyle categoryCardName = TextStyle(
+    fontSize: 15,
+    color: Colors.white,
+    fontWeight: FontWeight.w500,
+  );
 }
