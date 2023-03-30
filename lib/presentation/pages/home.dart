@@ -4,6 +4,7 @@ import 'package:barsanti_app/presentation/theme/colors.dart';
 import 'package:barsanti_app/presentation/theme/scroll.dart';
 import 'package:barsanti_app/presentation/theme/styles.dart';
 import 'package:barsanti_app/presentation/widgets/mini_news_card.dart';
+import 'package:barsanti_app/presentation/widgets/network_error_dialog.dart';
 import 'package:barsanti_app/presentation/widgets/news_card.dart';
 import 'package:barsanti_app/presentation/widgets/placeholders.dart';
 import 'package:flutter/material.dart';
@@ -162,15 +163,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 FutureBuilder(
                   future: _homeDataRequest,
                   builder: (ctx, snap) {
-                    if (snap.hasError) {
-                      debugPrint(snap.error.toString());
-                      return Text("something went wrong");
+                    switch (snap.connectionState) {
+                      case ConnectionState.waiting:
+                        return _buildPlaceholder();
+                      case ConnectionState.done:
+                      default:
+                        if (snap.hasError) {
+                          debugPrint(snap.error.toString());
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            showNetworkErrorDialog(context, refreshHomeData);
+                          });
+                          return _buildPlaceholder();
+                        }
+                        return _buildHome(snap.data!);
                     }
-                    if (snap.connectionState == ConnectionState.done) {
-                      return _buildHome(snap.data!);
-                    }
-
-                    return _buildPlaceholder();
                   },
                 ),
               ],
