@@ -6,6 +6,7 @@ import "package:barsanti_app/routes/router.gr.dart";
 import "package:flutter/material.dart";
 import "package:google_nav_bar/google_nav_bar.dart";
 
+@RoutePage()
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
 
@@ -18,9 +19,13 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AutoTabsRouter(
+      lazyLoad: false,
       homeIndex: 0,
       routes: routes,
-      builder: (ctx, child, animation) {
+      transitionBuilder: (ctx, child, animation) {
+        return child;
+      },
+      builder: (ctx, child) {
         final tabsRouter = AutoTabsRouter.of(ctx);
 
         return Scaffold(

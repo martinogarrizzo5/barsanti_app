@@ -19,6 +19,7 @@ class BarsantiButton extends StatelessWidget {
       type: MaterialType.transparency,
       child: Ink(
         decoration: BoxDecoration(
+          color: Colors.white,
           border: Border.all(
             color: BarsantiColors.border,
             width: 1.0,

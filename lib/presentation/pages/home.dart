@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:barsanti_app/data/api/news_repo.dart';
 import 'package:barsanti_app/data/models/home_data/home_data.dart';
 import 'package:barsanti_app/presentation/theme/colors.dart';
@@ -13,6 +14,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import "package:carousel_slider/carousel_slider.dart";
 
+@RoutePage()
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -157,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   alignment: Alignment.center,
                   child: Image.asset(
                     "assets/images/logo.png",
-                    width: 180,
+                    height: 90,
                   ),
                 ),
                 FutureBuilder(
@@ -170,10 +172,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       default:
                         if (snap.hasError) {
                           debugPrint(snap.error.toString());
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            showNetworkErrorDialog(context, refreshHomeData);
-                          });
-                          return _buildPlaceholder();
+                          // TODO: handle error
+                          return const Center(child: Text("Errore"));
                         }
                         return _buildHome(snap.data!);
                     }

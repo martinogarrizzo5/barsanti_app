@@ -1,45 +1,54 @@
 import "package:auto_route/auto_route.dart";
-import 'package:auto_route/empty_router_widgets.dart';
-import 'package:barsanti_app/presentation/pages/home.dart';
-import 'package:barsanti_app/presentation/pages/layout.dart';
-import 'package:barsanti_app/presentation/pages/profile.dart';
-import 'package:barsanti_app/presentation/pages/search.dart';
-import "package:barsanti_app/presentation/pages/news_details.dart";
+import 'package:barsanti_app/routes/router.gr.dart';
 
 // TODO: remember to always run "flutter packages pub run build_runner watch" to apply changes to the routers
-@MaterialAutoRouter(routes: [
-  AutoRoute(
-    path: "/main",
-    page: MainScreen,
-    initial: true,
-    children: [
-      AutoRoute(
+@AutoRouterConfig()
+class AppRouter extends $AppRouter {
+  @override
+  final List<AutoRoute> routes = [
+    AutoRoute(
+      path: "/",
+      page: MainRoute.page,
+      children: [
+        AutoRoute(
           path: "home",
-          page: EmptyRouterPage,
-          name: "HomeRouter",
-          initial: true,
+          page: HomeRouter.page,
           children: [
-            AutoRoute(path: "", page: HomeScreen),
+            AutoRoute(
+              path: "",
+              page: HomeRoute.page,
+            ),
             AutoRoute(
               path: "news/:newsId",
-              page: NewsDetailsScreen,
+              page: NewsDetailsRoute.page,
             )
-          ]),
-      AutoRoute(
+          ],
+        ),
+        AutoRoute(
           path: "search",
-          page: EmptyRouterPage,
-          name: "SearchRouter",
+          page: SearchRouter.page,
           children: [
-            AutoRoute(path: "", page: SearchScreen),
-          ]),
-      AutoRoute(
+            AutoRoute(
+              path: "",
+              page: SearchRoute.page,
+            ),
+            AutoRoute(
+              path: "category/:categoryId",
+              page: CategoryRoute.page,
+            ),
+          ],
+        ),
+        AutoRoute(
           path: "profile",
-          page: EmptyRouterPage,
-          name: "ProfileRouter",
+          page: ProfileRouter.page,
           children: [
-            AutoRoute(path: "", page: ProfileScreen),
-          ]),
-    ],
-  ),
-])
-class $AppRouter {}
+            AutoRoute(
+              path: "",
+              page: ProfileRoute.page,
+            ),
+          ],
+        ),
+      ],
+    ),
+  ];
+}

@@ -1,5 +1,6 @@
 import 'package:barsanti_app/data/dio_config.dart';
 import 'package:barsanti_app/data/models/category/category.dart';
+import 'package:barsanti_app/data/models/news/news.dart';
 import 'package:dio/dio.dart';
 
 class CategoriesRepository {
@@ -12,7 +13,7 @@ class CategoriesRepository {
         .toList(growable: false);
   }
 
-  Future<Category> getCategory(String id) async {
+  Future<Category> getCategory(int id) async {
     final response = await _dio.get("/categories/$id");
     return Category.fromJson(response.data);
   }

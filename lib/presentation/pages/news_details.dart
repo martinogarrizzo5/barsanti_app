@@ -5,14 +5,15 @@ import 'package:barsanti_app/presentation/theme/barsanti_icons.dart';
 import 'package:barsanti_app/presentation/theme/colors.dart';
 import 'package:barsanti_app/presentation/theme/styles.dart';
 import 'package:barsanti_app/presentation/widgets/button.dart';
+import 'package:barsanti_app/presentation/widgets/html_rich_text.dart';
 import 'package:barsanti_app/presentation/widgets/network_image.dart';
 import 'package:barsanti_app/presentation/widgets/placeholders.dart';
 import 'package:barsanti_app/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shimmer/shimmer.dart';
-import "package:simple_html_css/simple_html_css.dart";
 
+@RoutePage()
 class NewsDetailsScreen extends StatefulWidget {
   final int newsId;
   const NewsDetailsScreen({
@@ -97,11 +98,7 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         const SizedBox(height: 24),
-        HTML.toRichText(
-          context,
-          news.description,
-          defaultTextStyle: BarsantiStyles.body,
-        ),
+        HTMLRichText(news.description),
         const SizedBox(height: 16),
         for (final file in news.files) ...[
           Card(
@@ -161,14 +158,18 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
                 FutureBuilder(
                   future: _newsRequest,
                   builder: (ctx, snap) {
-                    if (snap.hasError) {
-                      return const Center(child: Text("Errore"));
+                    switch (snap.connectionState) {
+                      case ConnectionState.waiting:
+                        return _buildPlaceholder();
+                      case ConnectionState.done:
+                      default:
+                        if (snap.hasError) {
+                          debugPrint(snap.error.toString());
+                          // TODO: handle error
+                          return const Center(child: Text("Errore"));
+                        }
+                        return _buildNewsContent(snap.data!);
                     }
-                    if (snap.connectionState == ConnectionState.done) {
-                      return _buildNewsContent(snap.data!);
-                    }
-
-                    return _buildPlaceholder();
                   },
                 ),
               ],

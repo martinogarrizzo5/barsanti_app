@@ -1,3 +1,4 @@
+import "dart:async";
 import "dart:math";
 
 import "package:auto_route/auto_route.dart";
@@ -6,13 +7,16 @@ import "package:barsanti_app/data/models/category/category.dart";
 import "package:barsanti_app/presentation/theme/barsanti_icons.dart";
 import "package:barsanti_app/presentation/theme/colors.dart";
 import "package:barsanti_app/presentation/theme/styles.dart";
+import "package:barsanti_app/presentation/widgets/network_error_dialog.dart";
 import "package:barsanti_app/presentation/widgets/network_image.dart";
 import "package:barsanti_app/routes/router.gr.dart";
-import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
+import "package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart";
 import "package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart";
 import "package:get_it/get_it.dart";
+import "package:shimmer/shimmer.dart";
 
+@RoutePage()
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
@@ -23,10 +27,55 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   late Future<List<Category>> _categoriesRequest;
 
+  final FocusNode _searchFocusNode = FocusNode();
+  late StreamSubscription<bool> keyboardSubscription;
+
   @override
   void initState() {
     super.initState();
     _categoriesRequest = GetIt.I.get<CategoriesRepository>().getCategories();
+
+    var keyboardVisibilityController = KeyboardVisibilityController();
+
+    // ensure text field is unfocused when keyboard is hidden to prevent keyboard from popping up again
+    // when navigating back in another screen
+    keyboardSubscription = keyboardVisibilityController.onChange.listen(
+      (bool visible) {
+        if (!visible) {
+          _searchFocusNode.unfocus();
+        }
+      },
+    );
+  }
+
+  Future<void> _refreshCategories() async {
+    setState(() {
+      _categoriesRequest = GetIt.I.get<CategoriesRepository>().getCategories();
+    });
+  }
+
+  Widget _buildCategoriesPlaceholder() {
+    return Shimmer.fromColors(
+      baseColor: BarsantiColors.tile,
+      highlightColor: BarsantiColors.shimmerColor,
+      period: const Duration(milliseconds: 1200),
+      child: MasonryGridView.count(
+        itemCount: 8,
+        crossAxisCount: 2,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+        shrinkWrap: true,
+        primary: false,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          final height = _calculateCategoryItemHeight(index);
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Container(height: height, color: Colors.red),
+          );
+        },
+      ),
+    );
   }
 
   Widget _buildCategoriesList(List<Category> categories) {
@@ -68,6 +117,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 Positioned(
                   bottom: 16,
                   left: 16,
+                  right: 16,
                   child: Text(
                     categories[index].name,
                     style: BarsantiStyles.categoryCardName,
@@ -76,7 +126,14 @@ class _SearchScreenState extends State<SearchScreen> {
                 Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: () => {},
+                    onTap: () => {
+                      context.router.navigate(
+                        CategoryRoute(
+                          categoryId: categories[index].id,
+                          category: categories[index],
+                        ),
+                      )
+                    },
                   ),
                 )
               ],
@@ -90,9 +147,9 @@ class _SearchScreenState extends State<SearchScreen> {
   double _calculateCategoryItemHeight(int index) {
     if (index % 2 == 0) {
       return 200 + Random().nextInt(21) * 1.0;
-    } else {
-      return 250 + Random().nextInt(21) * 1.0;
     }
+
+    return 250 + Random().nextInt(21) * 1.0;
   }
 
   @override
@@ -106,11 +163,13 @@ class _SearchScreenState extends State<SearchScreen> {
             horizontal: 24,
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 32),
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: TextField(
+                  focusNode: _searchFocusNode,
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     fillColor: BarsantiColors.searchBar,
@@ -133,6 +192,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   ),
                   keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.search,
                 ),
               ),
               const SizedBox(height: 32),

@@ -78,7 +78,7 @@ class NewsCard extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () => context.router.navigate(
-                  NewsDetailsScreenRoute(newsId: news.id),
+                  NewsDetailsRoute(newsId: news.id),
                 ),
               ),
             )

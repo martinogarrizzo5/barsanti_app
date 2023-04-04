@@ -18,7 +18,7 @@ class MiniNewsCard extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: () => context.router.navigate(
-        NewsDetailsScreenRoute(newsId: news.id),
+        NewsDetailsRoute(newsId: news.id),
       ),
       child: Row(
         children: [
