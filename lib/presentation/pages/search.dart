@@ -129,7 +129,6 @@ class _SearchScreenState extends State<SearchScreen> {
                     onTap: () => {
                       context.router.navigate(
                         CategoryRoute(
-                          categoryId: categories[index].id,
                           category: categories[index],
                         ),
                       )

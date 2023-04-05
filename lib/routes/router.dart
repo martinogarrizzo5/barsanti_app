@@ -36,6 +36,10 @@ class AppRouter extends $AppRouter {
               path: "category/:categoryId",
               page: CategoryRoute.page,
             ),
+            AutoRoute(
+              path: "news/:newsId",
+              page: NewsDetailsRoute.page,
+            )
           ],
         ),
         AutoRoute(

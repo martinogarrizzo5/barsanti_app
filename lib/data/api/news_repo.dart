@@ -2,6 +2,7 @@ import 'package:barsanti_app/data/dio_config.dart';
 import 'package:barsanti_app/data/models/home_data/home_data.dart';
 import 'package:barsanti_app/data/models/news/news.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 class NewsRepository {
   final _dio = Dio(dioBaseConfig);
@@ -25,10 +26,11 @@ class NewsRepository {
     int? newsCursor, // for infinite scroll
   }) async {
     final response = await _dio.get("/news", queryParameters: {
-      if (search != null) "search": search,
+      // if (search != null) "search": search,
       if (category != null) "category": category,
-      if (startDate != null) "startDate": startDate,
-      if (endDate != null) "endDate": endDate,
+      // if (startDate != null) "startDate": startDate,
+      // if (endDate != null) "endDate": endDate,
+      if (page != null) "page": page,
     });
 
     return (response.data as List)

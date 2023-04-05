@@ -85,4 +85,16 @@ class BarsantiStyles {
     color: Colors.white,
     fontWeight: FontWeight.w500,
   );
+
+  static const TextStyle categoryTitle = TextStyle(
+    color: Colors.white,
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+  );
+
+  static const TextStyle noNewsTitle = TextStyle(
+    fontSize: 19,
+    color: BarsantiColors.text,
+    fontWeight: FontWeight.w600,
+  );
 }

@@ -31,7 +31,6 @@ abstract class $AppRouter extends _i8.RootStackRouter {
         routeData: routeData,
         child: _i1.CategoryScreen(
           key: args.key,
-          categoryId: args.categoryId,
           category: args.category,
         ),
       );
@@ -99,14 +98,12 @@ abstract class $AppRouter extends _i8.RootStackRouter {
 class CategoryRoute extends _i8.PageRouteInfo<CategoryRouteArgs> {
   CategoryRoute({
     _i9.Key? key,
-    required int categoryId,
-    required _i10.Category? category,
+    required _i10.Category category,
     List<_i8.PageRouteInfo>? children,
   }) : super(
           CategoryRoute.name,
           args: CategoryRouteArgs(
             key: key,
-            categoryId: categoryId,
             category: category,
           ),
           initialChildren: children,
@@ -121,19 +118,16 @@ class CategoryRoute extends _i8.PageRouteInfo<CategoryRouteArgs> {
 class CategoryRouteArgs {
   const CategoryRouteArgs({
     this.key,
-    required this.categoryId,
     required this.category,
   });
 
   final _i9.Key? key;
 
-  final int categoryId;
-
-  final _i10.Category? category;
+  final _i10.Category category;
 
   @override
   String toString() {
-    return 'CategoryRouteArgs{key: $key, categoryId: $categoryId, category: $category}';
+    return 'CategoryRouteArgs{key: $key, category: $category}';
   }
 }
 
