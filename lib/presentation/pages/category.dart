@@ -6,12 +6,13 @@ import 'package:barsanti_app/data/models/news/news.dart';
 import 'package:barsanti_app/data/models/news_intro/news_intro.dart';
 import 'package:barsanti_app/presentation/theme/barsanti_icons.dart';
 import 'package:barsanti_app/presentation/theme/colors.dart';
+import 'package:barsanti_app/presentation/theme/scroll.dart';
 import 'package:barsanti_app/presentation/theme/styles.dart';
 import 'package:barsanti_app/presentation/widgets/button.dart';
 import 'package:barsanti_app/presentation/widgets/mini_news_card.dart';
 import 'package:barsanti_app/presentation/widgets/network_image.dart';
 import 'package:barsanti_app/presentation/widgets/news_card.dart';
-import 'package:barsanti_app/presentation/widgets/no_news_found.dart';
+import 'package:barsanti_app/presentation/widgets/news_indicators.dart';
 import 'package:barsanti_app/presentation/widgets/placeholders.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +31,6 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
-  static const _pageSize = 15;
-  late Future<List<NewsIntro>> _newsRequest;
   late Category _category;
 
   final PagingController<int, NewsIntro> _pagingController =
@@ -59,7 +58,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           await newsRepo.getNews(category: widget.category.id, page: page);
       final introNews = news.map((e) => NewsIntro.fromNews(e)).toList();
 
-      final isLastPage = news.length < _pageSize;
+      final isLastPage = news.length < Scroll.pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(introNews);
       } else {
@@ -73,8 +72,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   Widget _buildPlaceholder() {
     return Shimmer.fromColors(
-      baseColor: BarsantiColors.tile,
-      highlightColor: BarsantiColors.shimmerColor,
+      baseColor: AppColors.tile,
+      highlightColor: AppColors.shimmerColor,
       period: const Duration(milliseconds: 1200),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,82 +97,88 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return Scaffold(
       body: Builder(
         builder: (ctx) {
-          const imageHeight = 220.0;
+          const imageHeight = 250.0;
 
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    BarsantiNetworkImage(
-                      imageUrl: _category.imageUrl,
-                      width: double.infinity,
-                      height: imageHeight,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      height: imageHeight,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withOpacity(0.05),
-                            Colors.black.withOpacity(0.6),
-                          ],
+          return RefreshIndicator(
+            onRefresh: () => Future.sync(
+              () => _pagingController.refresh(),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Stack(
+                    children: [
+                      BarsantiNetworkImage(
+                        imageUrl: _category.imageUrl,
+                        width: double.infinity,
+                        height: imageHeight,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        height: imageHeight,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withOpacity(0.05),
+                              Colors.black.withOpacity(0.6),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 16,
-                        ),
-                        child: BarsantiButton(
-                          icon: BarsantiIcons.arrow_back,
-                          onTap: () => context.router.pop(),
+                      SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 16,
+                          ),
+                          child: BarsantiButton(
+                            icon: AppIcons.arrow_back,
+                            onTap: () => context.router.pop(),
+                          ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      bottom: 20,
-                      left: 0,
-                      right: 0,
-                      child: Text(
-                        _category.name,
-                        textAlign: TextAlign.center,
-                        style: BarsantiStyles.categoryTitle,
+                      Positioned(
+                        bottom: 20,
+                        left: 0,
+                        right: 0,
+                        child: Text(
+                          _category.name,
+                          textAlign: TextAlign.center,
+                          style: AppStyles.categoryTitle,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                PagedListView<int, NewsIntro>(
-                  shrinkWrap: true,
-                  primary: false,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 32,
+                    ],
                   ),
-                  pagingController: _pagingController,
-                  builderDelegate: PagedChildBuilderDelegate<NewsIntro>(
-                    itemBuilder: (context, item, index) => Column(
-                      children: [
-                        MiniNewsCard(item),
-                        const SizedBox(height: 24),
-                      ],
+                  PagedListView<int, NewsIntro>(
+                    shrinkWrap: true,
+                    primary: false,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 32,
                     ),
-                    noItemsFoundIndicatorBuilder: (ctx) => const NoNewsFound(),
-                    newPageProgressIndicatorBuilder: (ctx) {
-                      return _buildPlaceholder();
-                    },
-                    firstPageProgressIndicatorBuilder: (ctx) {
-                      return _buildPlaceholder();
-                    },
+                    pagingController: _pagingController,
+                    builderDelegate: PagedChildBuilderDelegate<NewsIntro>(
+                      itemBuilder: (context, item, index) => Column(
+                        children: [
+                          MiniNewsCard(item),
+                          const SizedBox(height: 24),
+                        ],
+                      ),
+                      noItemsFoundIndicatorBuilder: (ctx) =>
+                          const NoNewsFound(),
+                      newPageProgressIndicatorBuilder: (ctx) {
+                        return _buildPlaceholder();
+                      },
+                      firstPageProgressIndicatorBuilder: (ctx) {
+                        return _buildPlaceholder();
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

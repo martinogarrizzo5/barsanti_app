@@ -30,6 +30,10 @@ class AppRouter extends $AppRouter {
           children: [
             AutoRoute(
               path: "",
+              page: SearchIntroRoute.page,
+            ),
+            AutoRoute(
+              path: "full",
               page: SearchRoute.page,
             ),
             AutoRoute(
@@ -50,9 +54,14 @@ class AppRouter extends $AppRouter {
               path: "",
               page: ProfileRoute.page,
             ),
+            AutoRoute(
+              path: "news/:newsId",
+              page: NewsDetailsRoute.page,
+            )
           ],
         ),
       ],
     ),
+    AutoRoute(path: "/pdf-view", page: PdfViewRoute.page),
   ];
 }

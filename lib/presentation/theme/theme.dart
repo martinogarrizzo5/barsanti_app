@@ -3,17 +3,17 @@ import 'package:barsanti_app/presentation/theme/styles.dart';
 import 'package:flutter/material.dart';
 
 @immutable
-class BarsantiTheme {
-  const BarsantiTheme._();
+class AppTheme {
+  const AppTheme._();
 
   static ThemeData get() {
     return ThemeData(
-      primarySwatch: BarsantiColors.primary,
+      primarySwatch: AppColors.primary,
       colorScheme: const ColorScheme.light(
-        primary: BarsantiColors.primary,
-        primaryVariant: BarsantiColors.primaryDarker,
-        secondary: BarsantiColors.primary,
-        secondaryVariant: BarsantiColors.primaryDarker,
+        primary: AppColors.primary,
+        primaryVariant: AppColors.primaryDarker,
+        secondary: AppColors.primary,
+        secondaryVariant: AppColors.primaryDarker,
         surface: Colors.white,
         background: Colors.white,
         error: Colors.red,
@@ -21,9 +21,9 @@ class BarsantiTheme {
       scaffoldBackgroundColor: Colors.white,
       fontFamily: "Poppins",
       textTheme: const TextTheme(
-        bodyLarge: BarsantiStyles.body,
-        bodyMedium: BarsantiStyles.body,
-        bodySmall: BarsantiStyles.body,
+        bodyLarge: AppStyles.body,
+        bodyMedium: AppStyles.body,
+        bodySmall: AppStyles.body,
       ),
     );
   }

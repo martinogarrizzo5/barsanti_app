@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 
 @immutable
-class BarsantiColors {
-  const BarsantiColors._();
+class AppColors {
+  const AppColors._();
 
   static const MaterialColor primary = MaterialColor(
     0xFF07789B,
@@ -36,4 +36,6 @@ class BarsantiColors {
 
   static const Color dotColor = Color(0xFF5E6F74);
   static const Color dotActiveColor = Colors.white;
+
+  static Color darkBgColor = Colors.grey[900]!;
 }

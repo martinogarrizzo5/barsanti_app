@@ -17,8 +17,23 @@ class NoNewsFound extends StatelessWidget {
           ),
           const Text(
             'Nessuna news trovata',
-            style: BarsantiStyles.noNewsTitle,
+            style: AppStyles.noNewsTitle,
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class NoMoreNews extends StatelessWidget {
+  const NoMoreNews({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        children: const [
+          Text("Nessun'altra news trovata"),
         ],
       ),
     );

@@ -29,7 +29,7 @@ class BarsantiAlertDialog extends StatelessWidget {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  style: BarsantiStyles.button.copyWith(
+                  style: AppStyles.button.copyWith(
                     padding: MaterialStateProperty.all(
                       const EdgeInsets.symmetric(vertical: 10.0),
                     ),

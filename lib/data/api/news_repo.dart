@@ -24,13 +24,16 @@ class NewsRepository {
     DateTime? endDate,
     int? page,
     int? newsCursor, // for infinite scroll
+    List<int>? ids,
   }) async {
     final response = await _dio.get("/news", queryParameters: {
-      // if (search != null) "search": search,
+      if (search != null && search.isNotEmpty) "search": search,
       if (category != null) "category": category,
-      // if (startDate != null) "startDate": startDate,
-      // if (endDate != null) "endDate": endDate,
+      if (startDate != null) "startDate": startDate,
+      if (endDate != null) "endDate": endDate,
       if (page != null) "page": page,
+      if (ids != null && ids.isNotEmpty) "ids": ids.join(","),
+      if (ids?.isEmpty == true) "ids": "0",
     });
 
     return (response.data as List)

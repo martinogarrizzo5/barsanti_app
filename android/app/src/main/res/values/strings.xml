@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SPI Lombardia</string>
+    
+    <string name="flutter_downloader_notification_started">Download iniziato</string>
+    <string name="flutter_downloader_notification_in_progress">Download in esecuzione</string>
+    <string name="flutter_downloader_notification_canceled">Download cancellato</string>
+    <string name="flutter_downloader_notification_failed">Download fallito</string>
+    <string name="flutter_downloader_notification_complete">Download completato</string>
+    <string name="flutter_downloader_notification_paused">Download in pausa</string>
+</resources>

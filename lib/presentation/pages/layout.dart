@@ -32,7 +32,7 @@ class MainScreen extends StatelessWidget {
           body: child,
           bottomNavigationBar: Container(
             decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: BarsantiColors.border)),
+              border: Border(top: BorderSide(color: AppColors.border)),
             ),
             child: GNav(
               selectedIndex: tabsRouter.activeIndex,
@@ -46,7 +46,7 @@ class MainScreen extends StatelessWidget {
               duration: const Duration(milliseconds: 300),
               gap: 8,
               backgroundColor: Colors.white,
-              color: BarsantiColors.inactiveControl,
+              color: AppColors.inactiveControl,
               activeColor: Colors.white,
               iconSize: 26,
               tabBackgroundColor: Theme.of(context).primaryColor,
@@ -63,15 +63,15 @@ class MainScreen extends StatelessWidget {
               ),
               tabs: const [
                 GButton(
-                  icon: BarsantiIcons.home,
+                  icon: AppIcons.home,
                   text: "Home",
                 ),
                 GButton(
-                  icon: BarsantiIcons.search,
+                  icon: AppIcons.search,
                   text: "Cerca",
                 ),
                 GButton(
-                  icon: BarsantiIcons.bookmark,
+                  icon: AppIcons.bookmark,
                   text: "Preferiti",
                 ),
               ],

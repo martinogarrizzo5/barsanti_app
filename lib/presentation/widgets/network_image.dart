@@ -30,8 +30,8 @@ class BarsantiNetworkImage extends StatelessWidget {
           fit: fit,
         ),
         placeholder: (ctx, url) => Shimmer.fromColors(
-          baseColor: BarsantiColors.tile,
-          highlightColor: BarsantiColors.shimmerColor,
+          baseColor: AppColors.tile,
+          highlightColor: AppColors.shimmerColor,
           child: Container(
             width: width,
             height: height,

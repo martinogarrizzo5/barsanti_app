@@ -8,15 +8,17 @@ import 'package:barsanti_app/utils/formatters.dart';
 import 'package:flutter/material.dart';
 
 class NewsCard extends StatelessWidget {
+  static const _defaultHeight = 250.0;
+  final double? height;
   final NewsIntro news;
 
-  const NewsCard(this.news, {super.key});
+  const NewsCard(this.news, {super.key, this.height});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
+      height: height ?? _defaultHeight,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: Stack(
@@ -51,23 +53,23 @@ class NewsCard extends StatelessWidget {
                 children: [
                   Text(
                     news.category.name,
-                    style: BarsantiStyles.newsCategory,
+                    style: AppStyles.newsCategory,
                   ),
                   Text(
                     news.title,
-                    style: BarsantiStyles.newsTitle,
+                    style: AppStyles.newsTitle,
                   ),
                   Row(
                     children: [
                       const Icon(
                         Icons.calendar_today,
-                        color: BarsantiColors.subTitleDark,
+                        color: AppColors.subTitleDark,
                         size: 18,
                       ),
                       const SizedBox(width: 6),
                       Text(
                         Formatters.formatDate(context, news.date),
-                        style: BarsantiStyles.newsDate,
+                        style: AppStyles.newsDate,
                       )
                     ],
                   ),

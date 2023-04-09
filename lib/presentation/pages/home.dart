@@ -5,6 +5,7 @@ import 'package:barsanti_app/presentation/theme/colors.dart';
 import 'package:barsanti_app/presentation/theme/scroll.dart';
 import 'package:barsanti_app/presentation/theme/styles.dart';
 import 'package:barsanti_app/presentation/widgets/mini_news_card.dart';
+import 'package:barsanti_app/presentation/widgets/network_error.dart';
 import 'package:barsanti_app/presentation/widgets/network_error_dialog.dart';
 import 'package:barsanti_app/presentation/widgets/news_card.dart';
 import 'package:barsanti_app/presentation/widgets/placeholders.dart';
@@ -33,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _homeDataRequest = GetIt.I.get<NewsRepository>().getHomeData();
   }
 
-  Future<void> refreshHomeData() async {
+  Future<void> _refreshHomeData() async {
     setState(() {
       _homeDataRequest = GetIt.I.get<NewsRepository>().getHomeData();
       _page = 0;
@@ -43,18 +44,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildPlaceholder() {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        vertical: BarsantiStyles.scaffoldYPadding,
+        vertical: AppStyles.scaffoldYPadding,
         horizontal: 24,
       ),
       child: Shimmer.fromColors(
-        baseColor: BarsantiColors.tile,
-        highlightColor: BarsantiColors.shimmerColor,
+        baseColor: AppColors.tile,
+        highlightColor: AppColors.shimmerColor,
         period: const Duration(milliseconds: 1200),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ...const [
-              Text("Caricamento...", style: BarsantiStyles.title),
+              Text("Caricamento...", style: AppStyles.title),
               SizedBox(height: 12),
               BigNewsPlaceholder(),
               SizedBox(height: 18),
@@ -69,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ...const [
               SizedBox(height: 24),
-              Text("Caricamento...", style: BarsantiStyles.title),
+              Text("Caricamento...", style: AppStyles.title),
               SizedBox(height: 12),
               MiniNewsPlaceholder(),
               SizedBox(height: 24),
@@ -90,13 +91,19 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 16),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 32.0),
-          child: Text("In Evidenza", style: BarsantiStyles.title),
+          child: Text("In Evidenza", style: AppStyles.title),
         ),
         const SizedBox(height: 12),
         CarouselSlider(
           carouselController: _carouselController,
-          items:
-              homeData.highlightedNews.map((news) => NewsCard(news)).toList(),
+          items: homeData.highlightedNews
+              .map(
+                (news) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: NewsCard(news),
+                ),
+              )
+              .toList(),
           options: CarouselOptions(
               height: 250,
               viewportFraction: 0.9,
@@ -131,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              const Text("Eventi", style: BarsantiStyles.title),
+              const Text("Eventi", style: AppStyles.title),
               const SizedBox(height: 12),
               for (final news in homeData.latestNews) ...[
                 MiniNewsCard(news),
@@ -148,9 +155,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: refreshHomeData,
-        child: SafeArea(
-          child: SingleChildScrollView(
+        onRefresh: _refreshHomeData,
+        child: SingleChildScrollView(
+          child: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -172,9 +179,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       default:
                         if (snap.hasError) {
                           debugPrint(snap.error.toString());
-                          // TODO: handle error
-                          return const Center(child: Text("Errore"));
+                          return NetworkError(
+                            padding: const EdgeInsets.only(top: 48.0),
+                            onRetry: () => _refreshHomeData(),
+                          );
                         }
+
                         return _buildHome(snap.data!);
                     }
                   },

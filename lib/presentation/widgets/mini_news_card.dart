@@ -37,26 +37,26 @@ class MiniNewsCard extends StatelessWidget {
               children: [
                 Text(
                   news.category.name,
-                  style: BarsantiStyles.miniNewsCategory,
+                  style: AppStyles.miniNewsCategory,
                 ),
                 Text(
                   news.title,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
-                  style: BarsantiStyles.miniNewsTitle,
+                  style: AppStyles.miniNewsTitle,
                 ),
                 const SizedBox(height: 2),
                 Row(
                   children: [
                     const Icon(
-                      BarsantiIcons.calendar,
-                      color: BarsantiColors.subTitleLight,
+                      AppIcons.calendar,
+                      color: AppColors.subTitleLight,
                       size: 18,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       Formatters.formatDate(context, news.date),
-                      style: BarsantiStyles.miniNewsDate,
+                      style: AppStyles.miniNewsDate,
                     )
                   ],
                 )

@@ -1,5 +1,6 @@
 import 'package:barsanti_app/presentation/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class BigNewsPlaceholder extends StatelessWidget {
   const BigNewsPlaceholder({super.key});
@@ -25,7 +26,7 @@ class TextPlaceholder extends StatelessWidget {
       child: Container(
         height: 12,
         width: width,
-        color: BarsantiColors.tile,
+        color: AppColors.tile,
       ),
     );
   }
@@ -45,7 +46,7 @@ class ImagePlaceholder extends StatelessWidget {
       child: Container(
         height: height,
         width: width,
-        color: BarsantiColors.tile,
+        color: AppColors.tile,
       ),
     );
   }
@@ -84,6 +85,56 @@ class MiniNewsPlaceholder extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class MiniNewsListPlaceholder extends StatelessWidget {
+  const MiniNewsListPlaceholder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: AppColors.tile,
+      highlightColor: AppColors.shimmerColor,
+      period: const Duration(milliseconds: 1200),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          MiniNewsPlaceholder(),
+          SizedBox(height: 24),
+          MiniNewsPlaceholder(),
+          SizedBox(height: 24),
+          MiniNewsPlaceholder(),
+          SizedBox(height: 24),
+          MiniNewsPlaceholder(),
+          SizedBox(height: 24),
+          MiniNewsPlaceholder(),
+        ],
+      ),
+    );
+  }
+}
+
+class NewsListPlaceholder extends StatelessWidget {
+  const NewsListPlaceholder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: AppColors.tile,
+      highlightColor: AppColors.shimmerColor,
+      period: const Duration(milliseconds: 1200),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          BigNewsPlaceholder(),
+          SizedBox(height: 24),
+          BigNewsPlaceholder(),
+          SizedBox(height: 24),
+          BigNewsPlaceholder(),
+        ],
+      ),
     );
   }
 }

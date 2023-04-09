@@ -18,7 +18,7 @@ class HTMLRichText extends StatelessWidget {
     return HTML.toRichText(
       context,
       formattedText,
-      defaultTextStyle: BarsantiStyles.body,
+      defaultTextStyle: AppStyles.body,
       linksCallback: (url) {
         Browser.openLink(url);
       },
