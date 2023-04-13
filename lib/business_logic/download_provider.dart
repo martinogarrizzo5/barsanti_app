@@ -59,6 +59,10 @@ class DownloadProvider with ChangeNotifier {
           _tasks![taskIndex]
             ..status = status
             ..progress = progress;
+
+          if (status == DownloadTaskStatus.complete) {
+            openDownloadedFile(_tasks![taskIndex]);
+          }
           notifyListeners();
         }
       }
@@ -248,7 +252,6 @@ class DownloadProvider with ChangeNotifier {
   String getDownloadStatusLabel(TaskInfo? task) {
     String label = "";
     if (task == null) return "Scarica";
-    print(task.status);
 
     if (task.status == DownloadTaskStatus.undefined) {
       label = "Scarica";

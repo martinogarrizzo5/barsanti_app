@@ -3,8 +3,6 @@ import "package:flutter/material.dart";
 import "package:smooth_page_indicator/smooth_page_indicator.dart";
 
 class Scroll {
-  static const pageSize = 15;
-
   static CustomizableEffect dotsIndicatorEffect() {
     return CustomizableEffect(
       dotDecoration: DotDecoration(

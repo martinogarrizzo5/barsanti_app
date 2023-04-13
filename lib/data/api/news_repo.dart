@@ -23,6 +23,7 @@ class NewsRepository {
     DateTime? startDate,
     DateTime? endDate,
     int? page,
+    int? take,
     int? newsCursor, // for infinite scroll
     List<int>? ids,
   }) async {
@@ -32,6 +33,7 @@ class NewsRepository {
       if (startDate != null) "startDate": startDate,
       if (endDate != null) "endDate": endDate,
       if (page != null) "page": page,
+      if (take != null) "take": take,
       if (ids != null && ids.isNotEmpty) "ids": ids.join(","),
       if (ids?.isEmpty == true) "ids": "0",
     });

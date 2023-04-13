@@ -13,7 +13,7 @@ class NoNewsFound extends StatelessWidget {
           const SizedBox(height: 32),
           SvgPicture.asset(
             'assets/images/no-result.svg',
-            width: 270,
+            height: 250,
           ),
           const Text(
             'Nessuna news trovata',

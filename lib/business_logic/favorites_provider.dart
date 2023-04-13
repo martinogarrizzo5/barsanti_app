@@ -29,7 +29,7 @@ class FavoritesProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final ids = favoriteIds?.map((e) => int.parse(e)).toList();
+      final ids = favoriteIds?.map((e) => int.parse(e)).toList() ?? [];
       final newFavorites =
           await GetIt.I.get<NewsRepository>().getNews(ids: ids);
       _favorites =

@@ -7,6 +7,7 @@ import 'package:barsanti_app/data/models/news_intro/news_intro.dart';
 import 'package:barsanti_app/presentation/theme/barsanti_icons.dart';
 import 'package:barsanti_app/presentation/theme/colors.dart';
 import 'package:barsanti_app/presentation/theme/scroll.dart';
+import 'package:barsanti_app/presentation/theme/settings.dart';
 import 'package:barsanti_app/presentation/theme/styles.dart';
 import 'package:barsanti_app/presentation/widgets/button.dart';
 import 'package:barsanti_app/presentation/widgets/mini_news_card.dart';
@@ -58,11 +59,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
           await newsRepo.getNews(category: widget.category.id, page: page);
       final introNews = news.map((e) => NewsIntro.fromNews(e)).toList();
 
-      final isLastPage = news.length < Scroll.pageSize;
+      final isLastPage = news.length < AppSettings.pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(introNews);
       } else {
-        final nextPageKey = page + news.length;
+        final nextPageKey = page + 1;
         _pagingController.appendPage(introNews, nextPageKey);
       }
     } catch (err) {

@@ -58,23 +58,29 @@ class _SearchIntroScreenState extends State<SearchIntroScreen> {
   }
 
   Widget _buildCategoriesPlaceholder() {
-    return Shimmer.fromColors(
-      baseColor: AppColors.tile,
-      highlightColor: AppColors.shimmerColor,
-      period: const Duration(milliseconds: 1200),
-      child: MasonryGridView.count(
-        itemCount: 8,
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(
+        vertical: AppStyles.scaffoldYPadding,
+        horizontal: 24,
+      ),
+      sliver: SliverMasonryGrid.count(
+        childCount: 8,
         crossAxisCount: 2,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
-        shrinkWrap: true,
-        primary: false,
-        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           final height = _calculateCategoryItemHeight(index);
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Container(height: height, color: Colors.red),
+          return Shimmer.fromColors(
+            baseColor: AppColors.tile,
+            highlightColor: AppColors.shimmerColor,
+            period: const Duration(milliseconds: 1200),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                height: height,
+                color: Colors.grey[200],
+              ),
+            ),
           );
         },
       ),
@@ -82,67 +88,70 @@ class _SearchIntroScreenState extends State<SearchIntroScreen> {
   }
 
   Widget _buildCategoriesList(List<Category> categories) {
-    return MasonryGridView.count(
-      itemCount: categories.length,
-      crossAxisCount: 2,
-      mainAxisSpacing: 16,
-      crossAxisSpacing: 16,
-      shrinkWrap: true,
-      primary: false,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        final height = _calculateCategoryItemHeight(index);
-        return SizedBox(
-          height: height,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Stack(
-              children: [
-                BarsantiNetworkImage(
-                  imageUrl: categories[index].imageUrl,
-                  width: double.infinity,
-                  height: height,
-                ),
-                Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(0.05),
-                        Colors.black.withOpacity(0.6),
-                      ],
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 24,
+        horizontal: 24,
+      ),
+      sliver: SliverMasonryGrid.count(
+        childCount: categories.length,
+        crossAxisCount: 2,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+        itemBuilder: (context, index) {
+          final height = _calculateCategoryItemHeight(index);
+          return SizedBox(
+            height: height,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Stack(
+                children: [
+                  BarsantiNetworkImage(
+                    imageUrl: categories[index].imageUrl,
+                    width: double.infinity,
+                    height: height,
+                  ),
+                  Container(
+                    height: double.infinity,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.05),
+                          Colors.black.withOpacity(0.6),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  bottom: 16,
-                  left: 16,
-                  right: 16,
-                  child: Text(
-                    categories[index].name,
-                    style: AppStyles.categoryCardName,
+                  Positioned(
+                    bottom: 16,
+                    left: 16,
+                    right: 16,
+                    child: Text(
+                      categories[index].name,
+                      style: AppStyles.categoryCardName,
+                    ),
                   ),
-                ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () => {
-                      context.router.navigate(
-                        CategoryRoute(
-                          category: categories[index],
-                        ),
-                      )
-                    },
-                  ),
-                )
-              ],
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => {
+                        context.router.navigate(
+                          CategoryRoute(
+                            category: categories[index],
+                          ),
+                        )
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -166,9 +175,63 @@ class _SearchIntroScreenState extends State<SearchIntroScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: RefreshIndicator(
-      onRefresh: _refreshCategories,
-      child: SingleChildScrollView(
+      body: RefreshIndicator(
+        onRefresh: _refreshCategories,
+        child: CustomScrollView(
+          slivers: [
+            const SliverAppBar(
+              automaticallyImplyLeading: false,
+              toolbarHeight: 20,
+              backgroundColor: Colors.white,
+            ),
+            SliverAppBar(
+              toolbarHeight: 0,
+              automaticallyImplyLeading: false,
+              floating: true,
+              pinned: true,
+              snap: true,
+              backgroundColor: Colors.white,
+              bottom: AppBar(
+                backgroundColor: Colors.white,
+                toolbarHeight: 75,
+                automaticallyImplyLeading: false,
+                elevation: 0,
+                title: SearchBar(
+                  onSearch: _goToSearchPage,
+                  searchFocusNode: _searchFocusNode,
+                  controller: _searchController,
+                ),
+              ),
+            ),
+            FutureBuilder(
+              future: _categoriesRequest,
+              builder: (ctx, snap) {
+                switch (snap.connectionState) {
+                  case ConnectionState.waiting:
+                    return _buildCategoriesPlaceholder();
+                  case ConnectionState.done:
+                  default:
+                    if (snap.hasError) {
+                      debugPrint(snap.error.toString());
+                      return NetworkError(
+                        padding: const EdgeInsets.only(top: 48.0),
+                        onRetry: () => _refreshCategories(),
+                      );
+                    }
+                    return _buildCategoriesList(snap.data!);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/*
+
+SingleChildScrollView(
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -209,6 +272,4 @@ class _SearchIntroScreenState extends State<SearchIntroScreen> {
           ),
         ),
       ),
-    ));
-  }
-}
+*/
