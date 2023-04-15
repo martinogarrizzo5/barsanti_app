@@ -55,8 +55,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Future<void> _fetchPage(int page) async {
     try {
       final newsRepo = GetIt.I.get<NewsRepository>();
-      final news =
-          await newsRepo.getNews(category: widget.category.id, page: page);
+      final news = await newsRepo.getNews(
+          category: widget.category.id, page: page, take: AppSettings.pageSize);
       final introNews = news.map((e) => NewsIntro.fromNews(e)).toList();
 
       final isLastPage = news.length < AppSettings.pageSize;
@@ -104,10 +104,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
             onRefresh: () => Future.sync(
               () => _pagingController.refresh(),
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Stack(
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  primary: false,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  toolbarHeight: 250,
+                  titleSpacing: 0,
+                  automaticallyImplyLeading: false,
+                  title: Stack(
                     children: [
                       BarsantiNetworkImage(
                         imageUrl: _category.imageUrl,
@@ -152,14 +158,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       ),
                     ],
                   ),
-                  PagedListView<int, NewsIntro>(
-                    shrinkWrap: true,
-                    primary: false,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 32,
-                    ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 24,
+                    horizontal: 24,
+                  ),
+                  sliver: PagedSliverList<int, NewsIntro>(
                     pagingController: _pagingController,
                     builderDelegate: PagedChildBuilderDelegate<NewsIntro>(
                       itemBuilder: (context, item, index) => Column(
@@ -178,8 +183,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       },
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },

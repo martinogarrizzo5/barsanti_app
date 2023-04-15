@@ -1,3 +1,3 @@
 class AppSettings {
-  static const pageSize = 2;
+  static const pageSize = 15;
 }
