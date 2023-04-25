@@ -8,6 +8,7 @@ import 'package:barsanti_app/presentation/theme/colors.dart';
 import 'package:barsanti_app/presentation/theme/styles.dart';
 import 'package:barsanti_app/presentation/widgets/button.dart';
 import 'package:barsanti_app/presentation/widgets/html_rich_text.dart';
+import 'package:barsanti_app/presentation/widgets/network_error.dart';
 import 'package:barsanti_app/presentation/widgets/network_image.dart';
 import 'package:barsanti_app/presentation/widgets/placeholders.dart';
 import 'package:barsanti_app/routes/router.gr.dart';
@@ -176,48 +177,60 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
     );
   }
 
+  Future<void> _refreshNews() async {
+    setState(() {
+      final newsRepo = GetIt.I.get<NewsRepository>();
+      _newsRequest = newsRepo.getNewsById(widget.newsId);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 16,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    BarsantiButton(
-                      icon: AppIcons.arrow_back,
-                      onTap: () => context.router.pop(),
-                    ),
-                    _buildBookMarkButton(),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                FutureBuilder(
-                  future: _newsRequest,
-                  builder: (ctx, snap) {
-                    switch (snap.connectionState) {
-                      case ConnectionState.waiting:
-                        return _buildPlaceholder();
-                      case ConnectionState.done:
-                      default:
-                        if (snap.hasError) {
-                          debugPrint(snap.error.toString());
-                          // TODO: handle error
-                          return const Center(child: Text("Errore"));
-                        }
-                        return _buildNewsContent(snap.data!);
-                    }
-                  },
-                ),
-              ],
+      body: RefreshIndicator(
+        onRefresh: _refreshNews,
+        child: SingleChildScrollView(
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 16,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      BarsantiButton(
+                        icon: AppIcons.arrow_back,
+                        onTap: () => context.router.pop(),
+                      ),
+                      _buildBookMarkButton(),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  FutureBuilder(
+                    future: _newsRequest,
+                    builder: (ctx, snap) {
+                      switch (snap.connectionState) {
+                        case ConnectionState.waiting:
+                          return _buildPlaceholder();
+                        case ConnectionState.done:
+                        default:
+                          if (snap.hasError) {
+                            debugPrint(snap.error.toString());
+                            return NetworkError(
+                              padding: const EdgeInsets.only(top: 48.0),
+                              onRetry: () => _refreshNews(),
+                            );
+                          }
+                          return _buildNewsContent(snap.data!);
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

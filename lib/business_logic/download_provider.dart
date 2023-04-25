@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-
-import 'package:android_path_provider/android_path_provider.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -60,7 +58,7 @@ class DownloadProvider with ChangeNotifier {
             ..status = status
             ..progress = progress;
 
-          if (status == DownloadTaskStatus.complete) {
+          if (status == DownloadTaskStatus.complete && progress == 100) {
             openDownloadedFile(_tasks![taskIndex]);
           }
           notifyListeners();
@@ -106,8 +104,11 @@ class DownloadProvider with ChangeNotifier {
     final canDownload = await checkPermission();
     if (!canDownload) return;
 
+    // ios doesn't want urls with spaces
+    final encodedUrl = Uri.encodeFull(fileUrl).toString();
+
     final taskId = await FlutterDownloader.enqueue(
-      url: task?.link != null ? task!.link! : fileUrl,
+      url: task?.link != null ? task!.link! : encodedUrl,
       savedDir: storageDir,
       showNotification: true,
       openFileFromNotification: true,
@@ -230,6 +231,8 @@ class DownloadProvider with ChangeNotifier {
     if (taskId == null) {
       return false;
     }
+
+    await Future.delayed(const Duration(milliseconds: 100));
 
     bool canOpen = await FlutterDownloader.open(taskId: taskId);
     if (!canOpen) {
