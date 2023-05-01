@@ -106,14 +106,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ),
             child: CustomScrollView(
               slivers: [
-                SliverAppBar(
-                  primary: false,
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  toolbarHeight: 250,
-                  titleSpacing: 0,
-                  automaticallyImplyLeading: false,
-                  title: Stack(
+                SliverToBoxAdapter(
+                  child: Stack(
                     children: [
                       BarsantiNetworkImage(
                         imageUrl: _category.imageUrl,
