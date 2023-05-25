@@ -4,11 +4,9 @@ import "dart:math";
 import "package:auto_route/auto_route.dart";
 import "package:barsanti_app/data/api/categories_repo.dart";
 import "package:barsanti_app/data/models/category/category.dart";
-import "package:barsanti_app/presentation/theme/barsanti_icons.dart";
 import "package:barsanti_app/presentation/theme/colors.dart";
 import "package:barsanti_app/presentation/theme/styles.dart";
 import "package:barsanti_app/presentation/widgets/network_error.dart";
-import "package:barsanti_app/presentation/widgets/network_error_dialog.dart";
 import "package:barsanti_app/presentation/widgets/network_image.dart";
 import "package:barsanti_app/presentation/widgets/search_bar.dart";
 import "package:barsanti_app/routes/router.gr.dart";
@@ -196,7 +194,7 @@ class _SearchIntroScreenState extends State<SearchIntroScreen> {
                 toolbarHeight: 75,
                 automaticallyImplyLeading: false,
                 elevation: 0,
-                title: SearchBar(
+                title: BarsantiSearchBar(
                   onSearch: _goToSearchPage,
                   searchFocusNode: _searchFocusNode,
                   controller: _searchController,

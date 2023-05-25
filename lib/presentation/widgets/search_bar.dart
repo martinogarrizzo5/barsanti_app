@@ -1,13 +1,13 @@
 import 'package:barsanti_app/presentation/theme/barsanti_icons.dart';
 import 'package:barsanti_app/presentation/theme/colors.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide SearchBar;
 
-class SearchBar extends StatefulWidget {
+class BarsantiSearchBar extends StatefulWidget {
   final TextEditingController? controller;
   final FocusNode? searchFocusNode;
   final void Function(String) onSearch;
 
-  const SearchBar({
+  const BarsantiSearchBar({
     super.key,
     required this.onSearch,
     this.searchFocusNode,
@@ -15,10 +15,10 @@ class SearchBar extends StatefulWidget {
   });
 
   @override
-  State<SearchBar> createState() => _SearchBarState();
+  State<BarsantiSearchBar> createState() => _BarsantiSearchBarState();
 }
 
-class _SearchBarState extends State<SearchBar> {
+class _BarsantiSearchBarState extends State<BarsantiSearchBar> {
   late TextEditingController _searchController;
 
   @override

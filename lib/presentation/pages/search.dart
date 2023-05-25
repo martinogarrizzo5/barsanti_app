@@ -110,7 +110,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 automaticallyImplyLeading: false,
                 elevation: 0,
                 title: SafeArea(
-                  child: SearchBar(
+                  child: BarsantiSearchBar(
                     controller: _searchController,
                     onSearch: (text) {
                       _pagingController.refresh();
