@@ -1,4 +1,4 @@
-package it.barsanti.app
+package it.barsanti.eventiapp
 
 import io.flutter.embedding.android.FlutterActivity
 

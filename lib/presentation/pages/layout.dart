@@ -5,7 +5,6 @@ import "package:barsanti_app/presentation/theme/colors.dart";
 import "package:barsanti_app/routes/router.gr.dart";
 import "package:flutter/material.dart";
 import "package:google_nav_bar/google_nav_bar.dart";
-import 'package:upgrader/upgrader.dart';
 
 @RoutePage()
 class MainScreen extends StatelessWidget {
@@ -29,62 +28,53 @@ class MainScreen extends StatelessWidget {
       builder: (ctx, child) {
         final tabsRouter = AutoTabsRouter.of(ctx);
 
-        return UpgradeAlert(
-          upgrader: Upgrader(
-            dialogStyle: Platform.isIOS
-                ? UpgradeDialogStyle.cupertino
-                : UpgradeDialogStyle.material,
-            shouldPopScope: () => true,
-          ),
-          child: Scaffold(
-            body: child,
-            bottomNavigationBar: Container(
-              decoration: const BoxDecoration(
-                border: Border(top: BorderSide(color: AppColors.border)),
+        return Scaffold(
+          body: child,
+          bottomNavigationBar: Container(
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: AppColors.border)),
+            ),
+            child: GNav(
+              selectedIndex: tabsRouter.activeIndex,
+              onTabChange: (index) {
+                if (tabsRouter.activeIndex == index) {
+                  tabsRouter.navigate(routes[index]);
+                } else {
+                  tabsRouter.setActiveIndex(index);
+                }
+              },
+              duration: const Duration(milliseconds: 300),
+              gap: 8,
+              backgroundColor: Colors.white,
+              color: AppColors.inactiveControl,
+              activeColor: Colors.white,
+              iconSize: 26,
+              tabBackgroundColor: Theme.of(context).primaryColor,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              tabMargin: Platform.isIOS
+                  ? const EdgeInsets.only(
+                      bottom: 36, top: 16, left: 16, right: 16)
+                  : const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              hoverColor: Theme.of(context).primaryColor.withOpacity(0.1),
+              rippleColor: Theme.of(context).primaryColor.withOpacity(0.15),
+              textStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
               ),
-              child: GNav(
-                selectedIndex: tabsRouter.activeIndex,
-                onTabChange: (index) {
-                  if (tabsRouter.activeIndex == index) {
-                    tabsRouter.navigate(routes[index]);
-                  } else {
-                    tabsRouter.setActiveIndex(index);
-                  }
-                },
-                duration: const Duration(milliseconds: 300),
-                gap: 8,
-                backgroundColor: Colors.white,
-                color: AppColors.inactiveControl,
-                activeColor: Colors.white,
-                iconSize: 26,
-                tabBackgroundColor: Theme.of(context).primaryColor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                tabMargin: Platform.isIOS
-                    ? const EdgeInsets.only(
-                        bottom: 36, top: 16, left: 16, right: 16)
-                    : const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                hoverColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                rippleColor: Theme.of(context).primaryColor.withOpacity(0.15),
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
+              tabs: const [
+                GButton(
+                  icon: AppIcons.home,
+                  text: "Home",
                 ),
-                tabs: const [
-                  GButton(
-                    icon: AppIcons.home,
-                    text: "Home",
-                  ),
-                  GButton(
-                    icon: AppIcons.search,
-                    text: "Cerca",
-                  ),
-                  GButton(
-                    icon: AppIcons.bookmark,
-                    text: "Preferiti",
-                  ),
-                ],
-              ),
+                GButton(
+                  icon: AppIcons.search,
+                  text: "Cerca",
+                ),
+                GButton(
+                  icon: AppIcons.bookmark,
+                  text: "Preferiti",
+                ),
+              ],
             ),
           ),
         );

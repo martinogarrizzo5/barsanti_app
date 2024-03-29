@@ -26,7 +26,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final CarouselController _carouselController = CarouselController();
   late Future<HomeData> _homeDataRequest;
-  double _page = 0;
+  int _page = 0;
 
   @override
   void initState() {
@@ -62,8 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
             Align(
               alignment: Alignment.center,
-              child: SmoothIndicator(
-                offset: 2,
+              child: AnimatedSmoothIndicator(
+                activeIndex: 2,
                 count: 5,
                 effect: Scroll.dotsIndicatorEffect(),
               ),
@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
               autoPlay: true,
               onPageChanged: (page, reason) {
                 setState(() {
-                  _page = page * 1.0; // * 1.0 to convert to double
+                  _page = page;
                 });
               }),
         ),
@@ -124,8 +124,8 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 18),
               Align(
                 alignment: Alignment.center,
-                child: SmoothIndicator(
-                  offset: _page,
+                child: AnimatedSmoothIndicator(
+                  activeIndex: _page,
                   count: homeData.highlightedNews.length,
                   effect: Scroll.dotsIndicatorEffect(),
                   onDotClicked: (pageIndex) {
@@ -143,6 +143,17 @@ class _HomeScreenState extends State<HomeScreen> {
               for (final news in homeData.latestNews) ...[
                 MiniNewsCard(news),
                 const SizedBox(height: 24),
+              ],
+              if (homeData.latestNews.isEmpty) ...[
+                const SizedBox(height: 24),
+                const Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Nessun evento in programma",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 24),
               ]
             ],
           ),
@@ -157,6 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: RefreshIndicator(
         onRefresh: _refreshHomeData,
         child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           child: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -82,7 +82,6 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  // TODO: use custom scroll view with slivers
   @override
   Widget build(BuildContext context) {
     return Scaffold(

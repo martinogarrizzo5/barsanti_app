@@ -49,13 +49,13 @@ dependencies:
   flutter_keyboard_visibility: ^5.4.0
   provider: ^6.0.5
   shared_preferences: ^2.1.0
-  flutter_downloader: ^1.10.2
+  flutter_downloader: ^1.11.6
   path_provider: ^2.0.0
   permission_handler: ^10.2.0
   device_info_plus: ^8.1.0
   android_path_provider: ^0.3.0
   flutter_native_splash: ^2.2.19
-  upgrader: ^6.2.0
+  open_filex: ^4.4.0
 
   flutter_localizations:
     sdk: flutter

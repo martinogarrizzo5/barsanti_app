@@ -8,12 +8,13 @@ class AppTheme {
 
   static ThemeData get() {
     return ThemeData(
+      useMaterial3: false,
       primarySwatch: AppColors.primary,
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
-        primaryVariant: AppColors.primaryDarker,
+        // primaryVariant: AppColors.primaryDarker,
         secondary: AppColors.primary,
-        secondaryVariant: AppColors.primaryDarker,
+        // secondaryVariant: AppColors.primaryDarker,
         surface: Colors.white,
         background: Colors.white,
         error: Colors.red,

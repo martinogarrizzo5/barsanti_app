@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -14,6 +15,8 @@ class TaskInfo {
     this.taskId,
     this.progress = 0,
     this.status = DownloadTaskStatus.undefined,
+    this.savedDir,
+    this.fileName,
   });
 
   final String? name;
@@ -22,6 +25,8 @@ class TaskInfo {
   String? taskId;
   int progress;
   DownloadTaskStatus status;
+  String? savedDir;
+  String? fileName;
 }
 
 class DownloadProvider with ChangeNotifier {
@@ -31,24 +36,27 @@ class DownloadProvider with ChangeNotifier {
 
   DownloadProvider() {
     _bindBackgroundIsolate();
-    FlutterDownloader.registerCallback(downloadCallback, step: 1);
+    FlutterDownloader.registerCallback(downloadCallback);
     loadTasks();
   }
 
+  final maxBindRetries = 3;
+  int bindRetries = 0;
   void _bindBackgroundIsolate() {
     final isSuccess = IsolateNameServer.registerPortWithName(
       _port.sendPort,
       'downloader_send_port',
     );
-    if (!isSuccess) {
+    if (!isSuccess && bindRetries < maxBindRetries) {
       _unbindBackgroundIsolate();
+      bindRetries++;
       _bindBackgroundIsolate();
       return;
     }
 
     _port.listen((dynamic data) async {
       final taskId = (data as List<dynamic>)[0] as String;
-      final status = DownloadTaskStatus(data[1] as int);
+      final status = DownloadTaskStatus.values[(data[1] as int)];
       final progress = data[2] as int;
 
       if (_tasks != null && _tasks!.isNotEmpty) {
@@ -72,12 +80,12 @@ class DownloadProvider with ChangeNotifier {
   }
 
   @pragma('vm:entry-point')
-  static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
+  static void downloadCallback(String id, int status, int progress) {
     final port = IsolateNameServer.lookupPortByName('downloader_send_port');
-    port?.send([id, status.value, progress]);
+    port?.send([id, status, progress]);
   }
 
+  // TODO: how to optimize task loading?
   Future<void> loadTasks() async {
     _tasks = [];
 
@@ -90,6 +98,8 @@ class DownloadProvider with ChangeNotifier {
           taskId: task.taskId,
           progress: task.progress,
           status: task.status,
+          savedDir: task.savedDir,
+          fileName: task.filename,
         ));
       }
     }
@@ -97,12 +107,17 @@ class DownloadProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future downloadFile(String fileName, String fileUrl, {TaskInfo? task}) async {
+  // return true only if the download starts correctly
+  Future<bool> downloadFile(String fileName, String fileUrl,
+      {TaskInfo? task}) async {
     final storageDir = await prepareSaveDir();
-    if (storageDir == null) return;
+    if (storageDir == null) return false;
 
     final canDownload = await checkPermission();
-    if (!canDownload) return;
+    if (!canDownload) return false;
+
+    final uniqueFileName =
+        await getFilenamePath(Directory(storageDir), fileName);
 
     // ios doesn't want urls with spaces
     final encodedUrl = Uri.encodeFull(fileUrl).toString();
@@ -113,19 +128,43 @@ class DownloadProvider with ChangeNotifier {
       showNotification: true,
       openFileFromNotification: true,
       allowCellular: true,
+      saveInPublicStorage: true,
+      fileName: uniqueFileName,
     );
 
     if (task != null) {
       task.taskId = taskId;
     } else if (_tasks != null) {
       _tasks!.add(TaskInfo(
-        name: fileName,
+        name: uniqueFileName,
         link: fileUrl,
         taskId: taskId,
+        savedDir: storageDir,
+        fileName: uniqueFileName,
       ));
     }
 
     notifyListeners();
+
+    return true;
+  }
+
+  Future<String> getFilenamePath(
+      Directory directory, String originalFileName) async {
+    String fileName = originalFileName;
+    var i = 0;
+    while (true) {
+      String fullPath = directory.path + Platform.pathSeparator + fileName;
+      if (await File(fullPath).exists()) {
+        i++;
+        List splits = originalFileName.split('.');
+        fileName = ["${splits[0]}.$i", splits[1]].join('.');
+      } else {
+        break;
+      }
+    }
+
+    return fileName;
   }
 
   Future<List<DownloadTask>> getDownloadingTasks() async {
@@ -169,9 +208,11 @@ class DownloadProvider with ChangeNotifier {
     String? storageDir;
 
     if (Platform.isAndroid) {
-      final androidDir =
-          await getExternalStorageDirectories(type: StorageDirectory.downloads);
-      storageDir = androidDir?.first.absolute.path;
+      storageDir = "/storage/emulated/0/Download";
+      if (!(await Directory(storageDir).exists())) {
+        final appDir = await getExternalStorageDirectories();
+        storageDir = appDir?.first.absolute.path;
+      }
     } else {
       storageDir = (await getApplicationDocumentsDirectory()).absolute.path;
     }
@@ -234,12 +275,16 @@ class DownloadProvider with ChangeNotifier {
 
     await Future.delayed(const Duration(milliseconds: 100));
 
-    bool canOpen = await FlutterDownloader.open(taskId: taskId);
-    if (!canOpen) {
-      await delete(taskInfo!);
+    // bool canOpen = await FlutterDownloader.open(taskId: taskId);
+    final openResult =
+        await OpenFilex.open("${taskInfo!.savedDir}/${taskInfo.fileName}");
+
+    if (openResult.type == ResultType.fileNotFound) {
+      await delete(taskInfo);
+      await downloadFile(taskInfo.fileName!, taskInfo.link!);
     }
 
-    return canOpen;
+    return openResult.type == ResultType.done;
   }
 
   Future<void> delete(TaskInfo task) async {

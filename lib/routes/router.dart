@@ -62,6 +62,6 @@ class AppRouter extends $AppRouter {
         ),
       ],
     ),
-    AutoRoute(path: "/pdf-view", page: PdfViewRoute.page),
+    // AutoRoute(path: "/pdf-view", page: PdfViewRoute.page),
   ];
 }

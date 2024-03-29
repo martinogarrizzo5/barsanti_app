@@ -116,7 +116,7 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
     final tasks = dwnProvider.tasks ?? [];
 
     return news.files.map((file) {
-      final taskIndex = tasks.indexWhere((task) => task.link == file.url);
+      final taskIndex = tasks.lastIndexWhere((task) => task.link == file.url);
       final task = taskIndex != -1 ? tasks[taskIndex] : null;
 
       String label = dwnProvider.getDownloadStatusLabel(task);
@@ -190,6 +190,7 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
       body: RefreshIndicator(
         onRefresh: _refreshNews,
         child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(

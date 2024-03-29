@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:barsanti_app/business_logic/download_provider.dart';
 import 'package:barsanti_app/business_logic/favorites_provider.dart';
 import 'package:barsanti_app/data/api/categories_repo.dart';
@@ -30,8 +32,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => FavoritesProvider()),
-        ChangeNotifierProvider(create: (_) => DownloadProvider())
+        ChangeNotifierProvider(
+          create: (_) => FavoritesProvider(),
+          lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DownloadProvider(),
+          lazy: false,
+        )
       ],
       child: MaterialApp.router(
         theme: AppTheme.get(),
