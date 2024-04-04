@@ -53,7 +53,7 @@ class MainScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               tabMargin: Platform.isIOS
                   ? const EdgeInsets.only(
-                      bottom: 36, top: 16, left: 16, right: 16)
+                      bottom: 24, top: 16, left: 16, right: 16)
                   : const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               hoverColor: Theme.of(context).primaryColor.withOpacity(0.1),
               rippleColor: Theme.of(context).primaryColor.withOpacity(0.15),
